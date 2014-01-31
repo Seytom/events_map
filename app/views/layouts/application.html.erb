@@ -102,7 +102,7 @@
                       });
 
                       google.maps.event.addListener(marker[i], 'click', function() {
-                        alert(this.position);
+                        
                         var a = 0
                         for (var i in infowindow)
                         {
@@ -141,8 +141,7 @@
   
     function makeTable() 
     {
-      console.log("Made it!");
-      console.table(mu_results);
+      
       for (i in mu_results) 
       {
           if (typeof mu_results[i]['venue'] != 'undefined')

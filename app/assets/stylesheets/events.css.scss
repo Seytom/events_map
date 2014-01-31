@@ -3,6 +3,22 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import "bootstrap";
 
-#container{
-	background-color:green;
+
+html {
+  overflow-y: scroll;
+}
+
+body {
+  padding-top: 60px;
+  background-image:url('Vertical chip.png');
+}
+
+.container {
+	background-color: white;
+}
+
+.container2 {
+	background-color: tan;
+	text-indent: 5px;
+	text-shadow: 3px, 3px ;
 }

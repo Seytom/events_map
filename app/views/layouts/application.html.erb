@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EventsMap</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDANKZzfJ0ZeFmw7L_mlVqSJoWf3n5K7nU&sensor=false">
+    </script>
+    <script type="text/javascript" src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
+    <script type="text/javascript">
+      var geocoder;
+      var map;
+      var i;
+      var mu_results=[];
+        $(document).ready(function(){
+           $('button').click(function(){
+            console.log("Help!!!");
+            makeTable();
+
+           });
+
+          $('#search_form').submit(function(){
+             
+             // var new_LatLon = codeAddress("Minneapolis, MN"); + new_LatLon
+              console.log("New position: " );
+              return false;
+            //   $.get(
+            //     $(this).attr('action'),
+            //     $(this).serialize(),
+
+            //     function(data){
+        
+            //     {
+            //       console.log(data);
+
+                   
+            //       }
+                    
+        
+            //     },
+            //     "json"
+            //   );
+            
+            });
+
+
+            $.get($('#mu_form').attr('action'), function(data){
+                
+                mu_results = data['results'];
+                
+                function initialize() {
+                  var mapOptions = {
+                    center: new google.maps.LatLng(47.6197, -122.3331),
+                    zoom: 11
+                  };
+                  map = new google.maps.Map(document.getElementById("map-canvas"),
+                      mapOptions);
+
+                  var contentString = [];//arrays for adding info windows to markers
+                  var infowindow = [];
+                  var marker = [];     
+
+                  for (i in mu_results) 
+                  {
+
+                    if (typeof mu_results[i]['venue'] != 'undefined')
+                    {
+                      
+                      contentString[i] = mu_results[i]['description'];
+
+                      console.log("i: " + i);
+                      var d = new Date();
+                      var time_now = d.getTime();
+                      var event_time = mu_results[i]['time'];
+                      
+                      if  ((event_time - time_now) < 156400000)
+                          var image = '/assets/red_MarkerM.png';
+                      else if  ((event_time - time_now) < 604800000)
+                          var image = '/assets/green_MarkerM.png';
+                      else if ((event_time - time_now) < 1200000000)
+                          var image = '/assets/brown_MarkerM.png';
+                      else
+                          var image = '/assets/paleblue_MarkerM.png';
+
+                      var my_lat_long = new google.maps.LatLng(mu_results[i]['venue']['lat'],mu_results[i]['venue']['lon']);
+
+                      infowindow[i] = new google.maps.InfoWindow({
+                        content: contentString[i],
+                        position: my_lat_long
+                       }); 
+                      marker[i] = new google.maps.Marker({
+                          map: map,
+                          position: my_lat_long,
+                          icon: image
+                      });
+
+                      google.maps.event.addListener(marker[i], 'click', function() {
+                        alert(this.position);
+                        var a = 0
+                        for (var i in infowindow)
+                        {
+                          if (infowindow[i].position === this.position)
+                            {
+                              a = i;
+                            }
+                        }
+                        infowindow[a].open(map,this);
+                      });
+                    }
+                    else
+                    {
+                    console.log("No value for i or venue");
+                    } 
+                      
+                  };
+
+                  
+                };
+                google.maps.event.addDomListener(window, 'load', initialize);
+            }, 'json')
+                        
+    
+  
+  function codeAddress(address) 
+  {
+      geocoder = new google.maps.Geocoder();
+      geocoder.geocode( { 'address': address}, function(results, status) {
+          alert('Geocode was successful!');
+          map.setCenter(results[0].geometry.location);
+          
+      });
+      return results[0].geometry.location;
+  }
+  
+    function makeTable() 
+    {
+      console.log("Made it!");
+      console.table(mu_results);
+      for (i in mu_results) 
+      {
+          if (typeof mu_results[i]['venue'] != 'undefined')
+          {
+            var dateTime = new Date(mu_results[i]['time']);
+            var string = dateTime.toString();
+            var date = string.substring(0,15);
+            var time = string.substring(16,21) + " PST";
+            var fields = [date, time, 'name', 'event_url', 'address_1', 'city'];
+            $("#tbody").append("<tr>");
+            
+            for (var n=0; n<6; n++)
+            { 
+              if (n < 1)
+                $("#tbody").append("<td>" + date + "</td>");  
+              else if (n < 2)
+                $("#tbody").append("<td>" + time + "</td>");
+              else if (n < 3)
+                $("#tbody").append("<td>" + mu_results[i][fields[n]] + "</td>");
+              else if (n < 4)              
+                $("#tbody").append("<td><a href='" + mu_results[i][fields[n]] + "'> Go to event website</a> </td>");          
+              else
+                $("#tbody").append("<td>" + mu_results[i]['venue'][fields[n]] + "</td>");
+            }
+            $("#tbody").append("</tr>");
+          }
+      };
+    }
+  });
+  </script>
+
+  <%= csrf_meta_tags %>
+</head>
+
+<body id = "body">
+
+<%= yield %>
+
+</body>
+</html>

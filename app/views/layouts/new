@@ -1,0 +1,4 @@
+<img src="http://maps.googleapis.com/maps/api/staticmap?size=600x300&maptype=roadmap&scale=2
+&markers=color:green%7Clabel:G%7C600+University+Street,Seattle,WA
+&markers=color:blue%7Clabel:G%7C1325+4th+Avenue+600,Seattle,WA
+&markers=color:red%7Clabel:C%7C3936+NE+199th+Street,Lake+Forest+Park,WA&sensor=false">

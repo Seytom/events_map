@@ -1,0 +1,43 @@
+<div class="container">
+	<h1>Upcoming Tech Events</h1>
+</div>
+
+<form method="get" action="http://api.meetup.com/2/open_events?&key=5f657f71666d3d54162d257363493578&sign=true&lon=-122.3331&lat=47.6097&time=,3w&category=34&radius=15&limited_events=true&page=100&callback=?" id="mu_form">
+</form>
+
+
+<div class="container" id="map-canvas"/>
+
+</div>
+
+<div id="panel">
+	<form method="get" action="http://api.meetup.com/2/open_events?&key=5f657f71666d3d54162d257363493578&sign=true&lon=-122.3331&lat=47.6097&time=,3w&category=34&radius=15&limited_events=true&page=100&callback=?" id="search_form">
+      
+      <input type="textbox" name="address" placeholder="Change City">
+      <input type="submit" value="Submit">
+    </form>
+</div>
+
+<div id="panel2">
+      
+      <button id="button"> Create Event Table</button>
+</div>
+
+<div class="container" id="table"/>
+	<table border="1" class="table">
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Time</th>
+				<th>Event</th>
+				<th>Link</th>
+				<th>Street Address</th>
+				<th>City</th>				
+			</tr>
+		</thead>
+		<tbody id="tbody">
+
+		</tbody>
+	</table>
+</div>
+		

@@ -22,3 +22,31 @@ body {
 	text-indent: 5px;
 	text-shadow: 3px, 3px ;
 }
+
+#S {
+	width: 107px;
+	position: absolute;
+	left: 50px;
+	top: 100px;
+}
+
+#MV {
+	position: absolute;
+	left: 50px;
+	top: 150px;
+}
+
+#user_location {
+	width: 100px;
+	position: absolute;
+	left: 50px;
+	top: 200px;
+}
+
+#user_submit {	
+	position: absolute;
+	left: 50px;
+	top: 240px;
+}
+
+#map_canvas img { max-width: none; }

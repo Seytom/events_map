@@ -29,7 +29,6 @@
             function(data){
               coords = [47.6197, -122.3331]
               mu_results = data['results'];
-              city = "Seattle";
               console.table[mu_results];
               google.maps.event.addDomListener(window, 'load', initialize(coords));
               makeTable();
@@ -45,7 +44,6 @@
                 function(data){
                   mu_results = data['results'];
                   coords = [37.3894,-122.0819];
-                  city = "Mountain View";
                   initialize(coords);
                   makeTable();
                 },
@@ -64,7 +62,6 @@
                 function(data){
                   mu_results = data['results'];
                   coords = [47.6197, -122.3331];
-                  city = "Seattle";
                   initialize(coords);
                   makeTable();
                 },
@@ -162,6 +159,10 @@
       geocoder.geocode( { 'address': address}, function(results, status) {
           alert('Geocode was successful!');
           map.setCenter(results[0].geometry.location);
+          alert("Just latitude: " + results[0].geometry.location.lat());
+            $.get("http://api.meetup.com/2/open_events?&key=5f657f71666d3d54162d257363493578&sign=true&lon=-122.3331&lat=47.6097&time=,3m&category=34&radius=20&limited_events=true&page=100&callback=?",function(data,status){
+              alert("Data: " + data + "\nStatus: " + status);
+            });
           return results[0].geometry.location;          
       });
       alert("123geocoder was not called");

@@ -74,7 +74,6 @@
                $(document).ready(function(){
                     var x = document.getElementById("city_form");
                     var txt = x.elements[0].value;
-                    alert("Location: " + txt);
                     var location = codeAddress(txt);
                     
                     // return false;       
@@ -93,17 +92,18 @@
 
     var contentString = [];//arrays for adding info windows to markers
     var contentString2 = [];
-    var contentString3 = [];
     var infowindow = [];
     var marker = [];     
+    
     console.table(mu_results);
-    for (i in mu_results) 
+
+    for (i in mu_results) //Loop for attaching colored markers based on time to event
     {      
-      if (typeof mu_results[i]['venue'] != 'undefined')
+      if (typeof mu_results[i]['venue'] != 'undefined') // avoid errors caused by undefined venue values
       {        
         contentString[i] = mu_results[i]['description'];
         contentString2[i] = mu_results[i]['name'];
-        contentString3[i] = mu_results[i]['date'];  
+          
         var d = new Date();
         var time_now = d.getTime();
         var event_time = mu_results[i]['time'];
@@ -111,7 +111,7 @@
         var string = dateTime.toString();
         var date = string.substring(0,15);
         
-        if  ((event_time - time_now) < 156400000)
+        if  ((event_time - time_now) < 216400000)
             var image = '/assets/red_MarkerM.png';
         else if  ((event_time - time_now) < 604800000)
             var image = '/assets/green_MarkerM.png';
@@ -142,7 +142,7 @@
               }
           }
           infowindow[a].open(map,this);
-          console.log("Value for i or venue");
+          
         });
       }
       else
@@ -164,7 +164,7 @@
               txt1+"lon="+ results[0].geometry.location.lng() + "&lat=" + results[0].geometry.location.lat()+ "&"+txt2,
 
               function(data){
-              alert("In the get function!!");
+              
               mu_results = data['results'];
               coords = [results[0].geometry.location.lat(),results[0].geometry.location.lng()];
               initialize(coords);

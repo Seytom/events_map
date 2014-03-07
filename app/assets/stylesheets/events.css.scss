@@ -23,6 +23,31 @@ body {
 	text-shadow: 3px, 3px ;
 }
 
+#prompt{
+	margin-left:50px;
+	color:white;
+	font-size:15px;
+	position:relative;
+	top:-20px;
+}
+
+#iframe{
+	height:500px;
+	width:700px;
+	position:relative;
+	left:50px;
+	background-color:black;
+}
+
+#key{	
+	width:107px;
+	background-color:white;
+	position:absolute;
+	left:50px;
+	top:300px;
+	padding:5px;
+}
+
 #S {
 	width: 107px;
 	position: absolute;

@@ -1,7 +1,7 @@
 <div class="container container2">
 	<h1>Upcoming Tech Events</h1>
 </div>
-
+<p id="prompt">Choose location:</p>
 <form method="get" action="http://api.meetup.com/2/open_events?&key=5f657f71666d3d54162d257363493578&sign=true&lon=-122.3331&lat=47.6097&time=,3m&category=34&radius=20&limited_events=true&page=100&callback=?" id="mu_form">
 	<input type="submit" id="S" value="Seattle" />
 </form>
@@ -19,14 +19,27 @@
 </div>
 
 <div id="panel2">      
-      <!-- <form method="get" action="http://api.meetup.com/2/open_events?&key=5f657f71666d3d54162d257363493578&sign=true&lon=%long&lat=%lat&time=,3w&category=34&radius=20&limited_events=true&page=100&callback=?" id="user_form">           	
-      </form> -->
+      <!-- <iframe src="http://www.seattletechcalendar.com/" id="iframe"> </iframe> -->
+
       <form method="get" id="city_form">
-        <input type="text" id="user_location" value="Other location">
+        <input type="text" id="user_location" placeholder="Other location">
         <input type="hidden" id="first_part" value="http://api.meetup.com/2/open_events?&key=5f657f71666d3d54162d257363493578&sign=true&">
         <input type="hidden" id="last_part" value="time=,3w&category=34&radius=20&limited_events=true&page=100&callback=?">
 	    <input type="submit" id="user_submit" >
 	  </form>
+
+	  <div id="key">
+	  		Marker key:
+	  		<p></p>
+	  		<img src="/assets/red_MarkerM.png">
+	  		<p>Events in less than 2 days</p>
+	  		<img src="/assets/green_MarkerM.png">
+	  		<p>Events in 2 - 7 days</p>
+	  		<img src="/assets/brown_MarkerM.png">
+	  		<p>Events in 1 - 2 weeks</p>
+	  		<img src="/assets/paleblue_MarkerM.png">
+	  		<p>Events in more than 2 weeks</p>
+	  </div>
 </div>
 
 <div class="container" id="table"/>

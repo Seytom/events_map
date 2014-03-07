@@ -72,11 +72,13 @@
           
             $('#city_form').submit(function(){
                $(document).ready(function(){
+                    alert("In the function!!");
                     var x = document.getElementById("city_form");
                     var txt = x.elements[0].value;
                     alert("Location: " + txt);
                     var location = codeAddress(txt);
-                    
+                    alert("CodeAddress says: " + location);
+                    console.log('here');
                     // return false;       
                 });
                return false; 
@@ -152,29 +154,26 @@
   
   function codeAddress(address) 
   {
+      alert("CodeAddress function called!");
       geocoder = new google.maps.Geocoder();
       geocoder.geocode( { 'address': address}, function(results, status) {
-            map.setCenter(results[0].geometry.location);
+          alert('Geocode was successful!');
+          map.setCenter(results[0].geometry.location);
+          alert("Just latitude: " + results[0].geometry.location.lat());
             var x = document.getElementById("city_form");
             var txt = x.elements[0].value;
             var txt1 = x.elements[1].value;
             var txt2 = x.elements[2].value;
-            
-            $.get(
-              txt1+"lon="+ results[0].geometry.location.lng() + "&lat=" + results[0].geometry.location.lat()+ "&"+txt2,
+            alert("Value 0: " + txt + "Value 1: " + txt1 + "Value 2: " + txt2);
 
-              function(data){
+            $.get(txt1+"lon="+ results[0].geometry.location.lng() + "&lat=" + results[0].geometry.location.lat()+ "&"+txt2,function(data,status){
               alert("In the get function!!");
-              mu_results = data['results'];
-              coords = [results[0].geometry.location.lat(),results[0].geometry.location.lng()];
-              initialize(coords);
-              makeTable();
-            },
-            "json"
-          );
+            });
           return false;          
       });
-     return false;
+      
+      alert('hello!');
+      return false;
   }
   
   function makeTable() 

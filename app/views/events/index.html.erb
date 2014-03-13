@@ -19,8 +19,7 @@
 </div>
 
 <div id="panel2">      
-      <!-- <iframe src="http://www.seattletechcalendar.com/" id="iframe"> </iframe> -->
-
+      
       <form method="get" id="city_form">
         <input type="text" id="user_location" placeholder="Other location">
         <input type="hidden" id="first_part" value="http://api.meetup.com/2/open_events?&key=5f657f71666d3d54162d257363493578&sign=true&">
@@ -28,7 +27,7 @@
 	    <input type="submit" id="user_submit" >
 	  </form>
 
-	  <div id="key">
+	  <div id="key" class="container">
 	  		Marker key:
 	  		<p></p>
 	  		<img src="/assets/red_MarkerM.png">
@@ -40,6 +39,7 @@
 	  		<img src="/assets/paleblue_MarkerM.png">
 	  		<p>Events in more than 2 weeks</p>
 	  </div>
+	  <button id="click_me">Map/Event List Toggler</button>
 </div>
 
 <div class="container" id="table"/>
@@ -59,4 +59,7 @@
 
 		</tbody>
 	</table>
+</div>
+<div>
+	<iframe src="http://www.seattletechcalendar.com/" id="iframe"> </iframe>
 </div>

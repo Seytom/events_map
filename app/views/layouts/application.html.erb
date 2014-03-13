@@ -15,6 +15,7 @@
     </script>
     <script type="text/javascript" src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
     <script type="text/javascript">
+
       var geocoder;
       var map;
       var i;
@@ -22,6 +23,11 @@
       var coords = [];
       var mu_results=[];
         $(document).ready(function(){
+
+          $( "#click_me" ).click(function() {
+              $('.container').toggle( "slow", function(){
+              });
+            });
           //initial display of Seattle map/info on page load
           $.get(
             $('#mu_form').attr('action'), 
@@ -29,14 +35,12 @@
             function(data){
               coords = [47.6197, -122.3331]
               mu_results = data['results'];
-              console.table[mu_results];
               google.maps.event.addDomListener(window, 'load', initialize(coords));
               makeTable();
            }, 'json');
            
            //provides Mountain View map/info on demand
           $('#search_form').submit(function(){              
-              console.log("Search Form Submitted." );
               $.get(
                 $(this).attr('action'),
                 $(this).serialize(),
@@ -70,154 +74,156 @@
               return false;            
             });
           
-            $('#city_form').submit(function(){
-               $(document).ready(function(){
-                    var x = document.getElementById("city_form");
-                    var txt = x.elements[0].value;
-                    var location = codeAddress(txt);
-                    
-                    // return false;       
-                });
-               return false; 
-            });
-
-              
-  function initialize(loc_array) { //=[, ] - why doesn't it accept this as a statement of a default value for loc_array?
-    var mapOptions = {
-      center: new google.maps.LatLng(loc_array[0], loc_array[1]), 
-      zoom: 11
-    }
-    map = new google.maps.Map(document.getElementById("map-canvas"),
-        mapOptions);
-
-    var contentString = [];//arrays for adding info windows to markers
-    var contentString2 = [];
-    var infowindow = [];
-    var marker = [];     
-    
-    console.table(mu_results);
-
-    for (i in mu_results) //Loop for attaching colored markers based on time to event
-    {      
-      if (typeof mu_results[i]['venue'] != 'undefined') // avoid errors caused by undefined venue values
-      {        
-        contentString[i] = mu_results[i]['description'];
-        contentString2[i] = mu_results[i]['name'];
-          
-        var d = new Date();
-        var time_now = d.getTime();
-        var event_time = mu_results[i]['time'];
-        var dateTime = new Date(mu_results[i]['time']);
-        var string = dateTime.toString();
-        var date = string.substring(0,15);
-        
-        if  ((event_time - time_now) < 216400000)
-            var image = '/assets/red_MarkerM.png';
-        else if  ((event_time - time_now) < 604800000)
-            var image = '/assets/green_MarkerM.png';
-        else if ((event_time - time_now) < 1200000000)
-            var image = '/assets/brown_MarkerM.png';
-        else
-            var image = '/assets/paleblue_MarkerM.png';
-
-        var my_lat_long = new google.maps.LatLng(mu_results[i]['venue']['lat'],mu_results[i]['venue']['lon']);
-
-        infowindow[i] = new google.maps.InfoWindow({
-          content: date + "<br>" + "  " + contentString2[i] + contentString[i],
-          position: my_lat_long
-         }); 
-        marker[i] = new google.maps.Marker({
-            map: map,
-            position: my_lat_long,
-            icon: image
-        });
-
-        google.maps.event.addListener(marker[i], 'click', function() {          
-          var a = 0
-          for (var i in infowindow)
-          {
-            if (infowindow[i].position === this.position)
-              {
-                a = i;
-              }
-          }
-          infowindow[a].open(map,this);
-          
-        });
-      }
-      else
-        console.log("No value for i or venue");                     
-    };
-  }
-  
-  function codeAddress(address) 
-  {
-      geocoder = new google.maps.Geocoder();
-      geocoder.geocode( { 'address': address}, function(results, status) {
-            map.setCenter(results[0].geometry.location);
+          $('#city_form').submit(function(){
             var x = document.getElementById("city_form");
             var txt = x.elements[0].value;
-            var txt1 = x.elements[1].value;
-            var txt2 = x.elements[2].value;
+            var location = codeAddress(txt);
+         
+            return false; 
+            });         
+
+
+    function initialize(loc_array) { //=[, ] - why doesn't it accept this as a statement of a default value for loc_array?
+      var mapOptions = {
+        center: new google.maps.LatLng(loc_array[0], loc_array[1]), 
+        zoom: 11
+      }
+      map = new google.maps.Map(document.getElementById("map-canvas"),
+          mapOptions);
+
+      var contentString = [];//arrays for adding info windows to markers
+      var contentString2 = [];
+      var infowindow = [];
+      var marker = [];     
+      // alert("Make a console table of mu_results");
+      console.table(mu_results);
+
+      for (i in mu_results) //Loop for attaching colored markers based on time to event
+      {      
+        if (typeof mu_results[i]['venue'] != 'undefined') // avoid errors caused by undefined venue values
+        {        
+          contentString[i] = mu_results[i]['description'];
+          contentString2[i] = mu_results[i]['name'];
             
-            $.get(
-              txt1+"lon="+ results[0].geometry.location.lng() + "&lat=" + results[0].geometry.location.lat()+ "&"+txt2,
-
-              function(data){
-              
-              mu_results = data['results'];
-              coords = [results[0].geometry.location.lat(),results[0].geometry.location.lng()];
-              initialize(coords);
-              makeTable();
-            },
-            "json"
-          );
-          return false;          
-      });
-     return false;
-  }
-  
-  function makeTable() 
-  {  
-    $("#tbody").html(" ");  //Clears out data from earlier table, if any
-    for (i in mu_results) 
-    {
-        var price = 0;
-        if (typeof mu_results[i]['fee'] != 'undefined')
-          {   console.log(mu_results[i]['fee']['amount']);
-              price = mu_results[i]['fee']['amount'];
-
-            } 
-        if (typeof mu_results[i]['venue'] != 'undefined')
-        {
+          var d = new Date();
+          var time_now = d.getTime();
+          var event_time = mu_results[i]['time'];
           var dateTime = new Date(mu_results[i]['time']);
           var string = dateTime.toString();
           var date = string.substring(0,15);
-          var time = string.substring(16,21) + " PST";
-          // if (typeof mu_results[i]['fee'] != 'undefined')
-                   
-          var fields = [date, time, 'name', price, 'event_url', 'address_1', 'city'];
-          $("#tbody").append("<tr>");
-                    
-          for (var n=0; n<7; n++)
-          { 
-            if (n < 1)
-              $("#tbody").append("<td>" + date + "</td>");  
-            else if (n < 2)
-              $("#tbody").append("<td>" + time + "</td>");
-            else if (n < 3)
-              $("#tbody").append("<td>" + mu_results[i][fields[n]] + "</td>");
-            else if (n < 4)
-              $("#tbody").append("<td>" + price + "</td>");
-            else if (n < 5)              
-              $("#tbody").append("<td><a href='" + mu_results[i][fields[n]] + "'> Go to event website</a> </td>");          
-            else
-              $("#tbody").append("<td>" + mu_results[i]['venue'][fields[n]] + "</td>");
-          }
-          $("#tbody").append("</tr>");
+          
+          if  ((event_time - time_now) < 216400000)
+              var image = '/assets/red_MarkerM.png';
+          else if  ((event_time - time_now) < 604800000)
+              var image = '/assets/green_MarkerM.png';
+          else if ((event_time - time_now) < 1200000000)
+              var image = '/assets/brown_MarkerM.png';
+          else
+              var image = '/assets/paleblue_MarkerM.png';
+
+          var my_lat_long = new google.maps.LatLng(mu_results[i]['venue']['lat'],mu_results[i]['venue']['lon']);
+
+          infowindow[i] = new google.maps.InfoWindow({
+            content: date + "<br>" + "  " + contentString2[i] + contentString[i],
+            position: my_lat_long
+           }); 
+          marker[i] = new google.maps.Marker({
+              map: map,
+              position: my_lat_long,
+              icon: image
+          });
+
+          google.maps.event.addListener(marker[i], 'click', function() {          
+            var a = 0
+            for (var i in infowindow)
+            {
+              if (infowindow[i].position === this.position)
+                {
+                  a = i;
+                }
+            }
+            infowindow[a].open(map,this);
+            
+          });
         }
-    };
-  }
+        else {
+          console.log("No value for i or venue");
+          // var address = mu_results[i]['address_1'] ; //+ mu_results[i]['venue']['city'] not recognized here, is recognized below                               
+        }
+      };
+    }
+ 
+    function codeAddress(address) 
+    {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': address}, function(results, status) {
+              map.setCenter(results[0].geometry.location);
+              var x = document.getElementById("city_form");
+              var txt = x.elements[0].value;
+              var txt1 = x.elements[1].value;
+              var txt2 = x.elements[2].value;
+              
+              $.get(
+                txt1+"lon="+ results[0].geometry.location.lng() + "&lat=" + results[0].geometry.location.lat()+ "&"+txt2,
+
+                function(data){
+                
+                mu_results = data['results'];
+                coords = [results[0].geometry.location.lat(),results[0].geometry.location.lng()];
+                initialize(coords);
+                makeTable();
+              },
+              "json"
+            );
+            return false;          
+        });
+       return false;
+    }
+    
+    function makeTable() 
+    {  
+      $("#tbody").html(" ");  //Clears out data from earlier table, if any
+      // alert("Make a console table of mu_results");
+      console.table(mu_results);
+      for (i in mu_results) 
+      {
+          var price = 0;
+          if (typeof mu_results[i]['fee'] != 'undefined')
+            {   console.log(mu_results[i]['fee']['amount']);
+                price = mu_results[i]['fee']['amount'];
+
+              } 
+
+          if (typeof mu_results[i]['venue'] != 'undefined')
+          {
+            var dateTime = new Date(mu_results[i]['time']);
+            var string = dateTime.toString();
+            var date = string.substring(0,15);
+            var time = string.substring(16,21) + " PST";
+            // if (typeof mu_results[i]['fee'] != 'undefined')
+                     
+            var fields = [date, time, 'name', price, 'event_url', 'address_1', 'city'];
+            $("#tbody").append("<tr>");
+                      
+            for (var n=0; n<7; n++)
+            { 
+              if (n < 1)
+                $("#tbody").append("<td>" + date + "</td>");  
+              else if (n < 2)
+                $("#tbody").append("<td>" + time + "</td>");
+              else if (n < 3)
+                $("#tbody").append("<td>" + mu_results[i][fields[n]] + "</td>");
+              else if (n < 4)
+                $("#tbody").append("<td>" + price + "</td>");
+              else if (n < 5)              
+                $("#tbody").append("<td><a href='" + mu_results[i][fields[n]] + "'> Go to event website</a> </td>");          
+              else
+                $("#tbody").append("<td>" + mu_results[i]['venue'][fields[n]] + "</td>");
+            }
+            $("#tbody").append("</tr>");
+          }
+      };
+    }
 
   });
   </script>

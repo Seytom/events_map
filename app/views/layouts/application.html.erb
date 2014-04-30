@@ -24,10 +24,7 @@
       var mu_results=[];
         $(document).ready(function(){
 
-          $( "#click_me" ).click(function() {
-              $('.container').toggle( "slow", function(){
-              });
-            });
+
           //initial display of Seattle map/info on page load
           $.get(
             $('#mu_form').attr('action'), 
@@ -80,7 +77,13 @@
             var location = codeAddress(txt);
          
             return false; 
-            });         
+            });     
+
+            //toggles the map to display Seattle Tech Calendar
+          $( "#click_me" ).click(function() {
+              $('.container').toggle( "slow", function(){
+              });
+            });    
 
 
     function initialize(loc_array) { //=[, ] - why doesn't it accept this as a statement of a default value for loc_array?
@@ -95,9 +98,7 @@
       var contentString2 = [];
       var infowindow = [];
       var marker = [];     
-      // alert("Make a console table of mu_results");
-      console.table(mu_results);
-
+      
       for (i in mu_results) //Loop for attaching colored markers based on time to event
       {      
         if (typeof mu_results[i]['venue'] != 'undefined') // avoid errors caused by undefined venue values
@@ -134,22 +135,17 @@
           });
 
           google.maps.event.addListener(marker[i], 'click', function() {          
-            var a = 0
+            var a = 0;
+
             for (var i in infowindow)
-            {
-              if (infowindow[i].position === this.position)
-                {
-                  a = i;
-                }
-            }
-            infowindow[a].open(map,this);
-            
+              {
+                if (infowindow[i].position === this.position){
+                    a = i;
+                  }
+              }
+            infowindow[a].open(map,this);            
           });
-        }
-        else {
-          console.log("No value for i or venue");
-          // var address = mu_results[i]['address_1'] ; //+ mu_results[i]['venue']['city'] not recognized here, is recognized below                               
-        }
+        }        
       };
     }
  
@@ -165,9 +161,7 @@
               
               $.get(
                 txt1+"lon="+ results[0].geometry.location.lng() + "&lat=" + results[0].geometry.location.lat()+ "&"+txt2,
-
-                function(data){
-                
+                function(data){                
                 mu_results = data['results'];
                 coords = [results[0].geometry.location.lat(),results[0].geometry.location.lng()];
                 initialize(coords);
@@ -183,46 +177,53 @@
     function makeTable() 
     {  
       $("#tbody").html(" ");  //Clears out data from earlier table, if any
-      // alert("Make a console table of mu_results");
-      console.table(mu_results);
+      // console.table(mu_results);
+      var events=0;
       for (i in mu_results) 
-      {
-          var price = 0;
-          if (typeof mu_results[i]['fee'] != 'undefined')
-            {   console.log(mu_results[i]['fee']['amount']);
-                price = mu_results[i]['fee']['amount'];
+      {          
+        var price = 0;
+        var dateTime = new Date(mu_results[i]['time']);
+        var string = dateTime.toString();
+        var date = string.substring(0,15);
+        var time = string.substring(16,21) + " PST";
+        var fields = [date, time, 'name', price, 'event_url', 'address_1', 'city'];//This array saves 3 lines of code at the end of the for loop below
 
-              } 
+        if (typeof mu_results[i]['venue'] == 'undefined'){//these if statements avoid 'undefined' errors while making table
+          mu_results[i]['venue'] = [];
+          mu_results[i]['venue']['address_1'] = 'Not provided';
+          mu_results[i]['venue']['city'] = 'Not provided';
+        }
 
-          if (typeof mu_results[i]['venue'] != 'undefined')
-          {
-            var dateTime = new Date(mu_results[i]['time']);
-            var string = dateTime.toString();
-            var date = string.substring(0,15);
-            var time = string.substring(16,21) + " PST";
-            // if (typeof mu_results[i]['fee'] != 'undefined')
-                     
-            var fields = [date, time, 'name', price, 'event_url', 'address_1', 'city'];
-            $("#tbody").append("<tr>");
-                      
-            for (var n=0; n<7; n++)
-            { 
-              if (n < 1)
-                $("#tbody").append("<td>" + date + "</td>");  
-              else if (n < 2)
-                $("#tbody").append("<td>" + time + "</td>");
-              else if (n < 3)
-                $("#tbody").append("<td>" + mu_results[i][fields[n]] + "</td>");
-              else if (n < 4)
-                $("#tbody").append("<td>" + price + "</td>");
-              else if (n < 5)              
-                $("#tbody").append("<td><a href='" + mu_results[i][fields[n]] + "'> Go to event website</a> </td>");          
-              else
-                $("#tbody").append("<td>" + mu_results[i]['venue'][fields[n]] + "</td>");
-            }
-            $("#tbody").append("</tr>");
+        if (typeof mu_results[i]['fee'] != 'undefined'){
+              price = mu_results[i]['fee']['amount'];
           }
-      };
+
+        $("#tbody").append("<tr>"); //Start populating table of events--column names created in view          
+
+        for (var n=0; n<7; n++) //for loop fills in the 7 table fields
+        { 
+          if (n < 1)
+            $("#tbody").append("<td>" + date + "</td>");  
+          else if (n < 2)
+            $("#tbody").append("<td>" + time + "</td>");
+          else if (n < 3)
+            $("#tbody").append("<td>" + mu_results[i][fields[n]] + "</td>");
+          else if (n < 4)
+            $("#tbody").append("<td>" + price + "</td>");
+          else if(n < 5) {  
+              if (typeof mu_results[i]['event_url'] == 'undefined'){//This undefined error avoided here because it affects matters beyond the called variable
+                  $("#tbody").append("<td> Not provided </td>");
+                }
+              else{            
+                $("#tbody").append("<td><a href='" + mu_results[i][fields[n]] + " ' target='_blank'> Go to event website</a> </td>"); //link opens window in new tab, to avoid back-button API issues
+                }
+            }  
+          else {       
+              $("#tbody").append("<td>" + mu_results[i]['venue'][fields[n]] + "</td>");
+            }
+          $("#tbody").append("</tr>");
+        }             
+      };        
     }
 
   });

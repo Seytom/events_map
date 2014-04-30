@@ -18,12 +18,15 @@ body {
 }
 
 .container2 {
-	background-color: tan;
+	background-color: teal;
 	text-indent: 5px;
 	text-shadow: 3px, 3px ;
+	border-radius: 10px;
 }
 
-
+h1{
+	text-align:center;
+}
 
 #prompt{
 	margin-left:50px;
